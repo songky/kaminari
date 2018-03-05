@@ -504,4 +504,51 @@ class PaginatorHelperTest < ActiveSupport::TestCase
       assert_equal'/users?page=2', helper.path_to_prev_page(users)
     end
   end
+
+  sub_test_case '#next_page_url' do
+    setup do
+      UrlHelperImpl.default_url_options = { host: 'http://www.example.org' }
+
+      @helper = UrlHelperImpl.new
+      @helper.params = { controller: 'users', action: 'index' }
+
+      2.times {|i| User.create! name: "user#{i}"}
+    end
+
+    test 'the first page' do
+      users = User.page(1).per(1)
+      assert_equal 'http://www.example.org/users?page=2', helper.next_page_url(users)
+    end
+
+    test 'the last page' do
+      users = User.page(2).per(1)
+      assert_nil helper.next_page_url(users)
+    end
+  end
+
+  sub_test_case '#prev_page_url' do
+    setup do
+      UrlHelperImpl.default_url_options = { host: 'http://www.example.org' }
+
+      @helper = UrlHelperImpl.new
+      @helper.params = { controller: 'users', action: 'index' }
+
+      3.times {|i| User.create! name: "user#{i}"}
+    end
+
+    test 'the first page' do
+      users = User.page(1).per(1)
+      assert_nil helper.prev_page_url(users)
+    end
+
+    test 'the second page' do
+      users = User.page(2).per(1)
+      assert_equal 'http://www.example.org/users', helper.prev_page_url(users)
+    end
+
+    test 'the last page' do
+      users = User.page(3).per(1)
+      assert_equal'http://www.example.org/users?page=2', helper.prev_page_url(users)
+    end
+  end
 end

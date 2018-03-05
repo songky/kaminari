@@ -29,6 +29,36 @@ module Kaminari
     #
     module UrlHelper
 
+      # A helper that calculates the url to the next page.
+      #
+      # ==== Examples
+      # Basic usage:
+      #
+      #   <%= next_page_url @items %>
+      #   #-> http://www.example.org/items?page=2
+      #
+      # It will return `nil` if there is no next page.
+      def next_page_url(scope, options = {})
+        Kaminari::Helpers::NextPage.new(self, options.reverse_merge(current_page: scope.current_page)).url if scope.next_page
+      end
+      alias path_to_next_url next_page_url
+
+      # A helper that calculates the url to the previous page.
+      #
+      # ==== Examples
+      # Basic usage:
+      #
+      #   <%= prev_page_url @items %>
+      #   #-> http://www.example.org/items
+      #
+      # It will return `nil` if there is no previous page.
+      def prev_page_url(scope, options = {})
+        Kaminari::Helpers::PrevPage.new(self, options.reverse_merge(current_page: scope.current_page)).url if scope.prev_page
+      end
+      alias previous_page_url     prev_page_url
+      alias url_to_prev_page      prev_page_url
+      alias url_to_previous_page  prev_page_url
+
       # A helper that calculates the path to the next page.
       #
       # ==== Examples
@@ -39,7 +69,7 @@ module Kaminari
       #
       # It will return `nil` if there is no next page.
       def path_to_next_page(scope, options = {})
-        Kaminari::Helpers::NextPage.new(self, options.reverse_merge(current_page: scope.current_page)).url if scope.next_page
+        Kaminari::Helpers::NextPage.new(self, options.reverse_merge(current_page: scope.current_page)).path if scope.next_page
       end
       alias next_page_path path_to_next_page
 
@@ -53,7 +83,7 @@ module Kaminari
       #
       # It will return `nil` if there is no previous page.
       def path_to_previous_page(scope, options = {})
-        Kaminari::Helpers::PrevPage.new(self, options.reverse_merge(current_page: scope.current_page)).url if scope.prev_page
+        Kaminari::Helpers::PrevPage.new(self, options.reverse_merge(current_page: scope.current_page)).path if scope.prev_page
       end
       alias path_to_prev_page path_to_previous_page
       alias prev_page_path path_to_previous_page

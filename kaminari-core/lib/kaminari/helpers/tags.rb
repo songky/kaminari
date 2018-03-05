@@ -34,6 +34,14 @@ module Kaminari
 
       def page_url_for(page)
         params = params_for(page)
+        params.delete(:host)
+        params.delete(:protocol)
+        params.delete(:port)
+        @template.url_for params
+      end
+
+      def page_path_for(page)
+        params = params_for(page)
         params[:only_path] = true
         @template.url_for params
       end
@@ -76,6 +84,10 @@ module Kaminari
         raise 'Override page with the actual page value to be a Page.'
       end
       # the link's href
+      def path
+        page_path_for page
+      end
+      # returns a full url for the page.
       def url
         page_url_for page
       end
